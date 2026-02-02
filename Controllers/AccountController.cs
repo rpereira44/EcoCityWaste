@@ -25,14 +25,14 @@ namespace EcoCityWaste.Controllers
                 return View();
             }
 
-            // Verifica se È um email v·lido
+            // Verifica se √© um email v√°lido
             if (!email.Contains("@") || !email.Contains("."))
             {
-                ViewBag.Erro = "O email inserido n„o È v·lido.";
+                ViewBag.Erro = "O email inserido n√£o √© v√°lido.";
                 return View();
             }
 
-            // Aqui depois È a consulta a BD 
+            // Aqui depois √© a consulta a BD 
             if (email == "admin@ecocity.com" && password == "123456")
             {
                 // Criar a Identidade do Utilizador
@@ -46,7 +46,7 @@ namespace EcoCityWaste.Controllers
 
                 var authProperties = new AuthenticationProperties
                 {
-                    IsPersistent = true, // MantÈm o login mesmo se fechar o browser
+                    IsPersistent = true, // Mant√©m o login mesmo se fechar o browser
                     ExpiresUtc = DateTime.UtcNow.AddMinutes(30)
                 };
 
@@ -59,7 +59,7 @@ namespace EcoCityWaste.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Se a password ou email n„o corresponderem ao utilizador de teste
+            // Se a password ou email n√£o corresponderem ao utilizador de teste
             ViewBag.Erro = "Email ou Palavra-passe incorretos.";
             return View();
         }
@@ -72,12 +72,12 @@ namespace EcoCityWaste.Controllers
 
         public async Task<IActionResult> GoogleResponse()
         {
-            // Verifica o resultado da autenticaÁ„o
+            // Verifica o resultado da autentica√ß√£o
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             if (result.Succeeded)
             {
-                // O google j· cria o cookie
+                // O google j√° cria o cookie
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -89,11 +89,32 @@ namespace EcoCityWaste.Controllers
 
         public async Task<IActionResult> Logout()
         {
-            // Isto apaga o Cookie e termina a sess„o
+            // Isto apaga o Cookie e termina a sess√£o
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             return RedirectToAction("Login", "Account");
         }
+
+		
+        public IActionResult Register()
+        {
+            return View(new RegisterViewModel());
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                TempData["SuccessMessage"] = "Conta criada com sucesso!";
+
+                return RedirectToAction("Login");
+            }
+
+            return View(model);
+        }
+
 
     }
 }
